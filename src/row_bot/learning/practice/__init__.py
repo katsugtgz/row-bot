@@ -112,7 +112,7 @@ def pool(store: Any, kind: str | None = None, *, limit: int | None = None) -> li
 
 def turns(store: Any) -> list[dict[str, Any]]:
     """The passing practice turns in use (the training data's practice slice), newest first: each with its task's
-    id and kind of work, the assistant that ran it and when."""
+    id and kind of work, the assistant that ran it, when, and the chats its issue came from."""
 
     found: list[dict[str, Any]] = []
     seen: set[str] = set()
@@ -124,7 +124,7 @@ def turns(store: Any) -> list[dict[str, Any]]:
                 continue
             seen.add(task_id)
             found.append({"task_id": task_id, "kind": kinds[task_id], "turn": turn, "model_ref": run.model_ref,
-                          "at": float(run.started_at)})
+                          "at": float(run.started_at), "threads": list(run.source_thread_ids)})
     return found
 
 

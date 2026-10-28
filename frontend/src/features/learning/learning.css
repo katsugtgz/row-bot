@@ -662,3 +662,15 @@
   justify-content: space-between;
   gap: var(--space-2);
 }
+/* L4b: the quick question's two answers and its ✕, wrapping under the question on a phone. */
+.learning-question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+.learning-question .entity-row-title {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
