@@ -273,3 +273,22 @@ def test_a_method_written_before_practice_reads_with_the_first_methods_practice(
     text["schema_version"] = 1
 
     assert strategy.from_dict(text) == strategy.FIRST
+
+
+def test_a_night_stopped_before_its_practice_ran_runs_the_rest_when_it_goes_on(work, store, clock, practice_on):
+    lookups(work, store, clock)
+    answers = [False, True]  # the person comes back after the first task ran
+
+    stopped = practice.practise(store, night=NIGHT, client=teacher(GOOD, GOOD_2),
+                                tester=Tester(ScriptedClient(answers_from_the_files)), method=strategy.FIRST,
+                                should_stop=lambda: answers.pop(0) if answers else False, now=clock.now,
+                                meter=TokenMeter(10**9))
+    assert stopped["state"] == "stopped" and stopped["made"] == 2 and stopped["ran"] == 1
+
+    later = teacher(GOOD)
+    went_on = practice.practise(store, night=NIGHT, client=later, tester=Tester(ScriptedClient(answers_from_the_files)),
+                                method=strategy.FIRST, now=clock.now, meter=TokenMeter(10**9))
+
+    assert went_on["state"] == "done" and went_on["made"] == 2 and went_on["ran"] == 2
+    assert later.calls == []  # nothing was made again
+    assert len(practice.pool(store)) == 2

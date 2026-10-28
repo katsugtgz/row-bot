@@ -171,9 +171,8 @@ def practise(store: Any, *, night: str, client: Any, tester: Any, method: Any,
     container = tester._has_container()  # noqa: SLF001 - the tester's own check (O21)
     known = {generate.fingerprint(task) for task in pool(store)}
     made_from = _meta(store, MADE_KEY, {})
-    tasks: list[PackTask] = []
-    issue_of: dict[str, str] = {}
-    threads: set[str] = set()
+    # Tasks made earlier tonight that didn't run before the person came back run now, with the new ones.
+    tasks, issue_of, threads = _not_run(store, night)
     for issue in due_issues(store, now=moment, method=method, book=book):
         if should_stop():
             report["state"] = "stopped"
@@ -223,6 +222,30 @@ def practise(store: Any, *, night: str, client: Any, tester: Any, method: Any,
     except Exception:  # noqa: BLE001 - the views refresh on their own
         logger.debug("Learning couldn't announce tonight's practice", exc_info=True)
     return last_night(store)
+
+
+def _not_run(store: Any, night: str) -> tuple[list[PackTask], dict[str, str], set[str]]:
+    """Tonight's practice tasks that were made but not run (the night stopped), with their issues and chats."""
+
+    tasks: list[PackTask] = []
+    issue_of: dict[str, str] = {}
+    threads: set[str] = set()
+    ran = {str(case.get("task") or "") for run, body in runs(store) if body.get("night") == night
+           for case in body.get("cases") or () if isinstance(case, dict)}
+    for run, body in runs(store):
+        if body.get("night") != night:
+            continue
+        for raw in body.get("tasks") or ():
+            try:
+                task = PackTask.from_dict(raw)
+            except (PackError, KeyError, TypeError, ValueError):
+                continue
+            if task.id in ran or task.id in issue_of:
+                continue
+            tasks.append(task)
+            issue_of[task.id] = str((body.get("issues") or {}).get(task.id) or "")
+            threads |= set(run.source_thread_ids)
+    return tasks, issue_of, threads
 
 
 def _run(tasks: list[PackTask], *, tester: Any, container: bool, meter: Any,
