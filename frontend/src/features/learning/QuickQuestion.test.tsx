@@ -55,7 +55,9 @@ it('Needs you asks the quick question with its two answers and an ✕ that never
 });
 
 it('Waving the question away sends no answer', async () => {
-  const io = fakeIO(learningSnapshot({ state: 'on', quick_question: QUESTION }));
+  const io = fakeIO(
+    learningSnapshot({ state: 'on', quick_question: QUESTION }),
+  );
   show(io);
 
   await userEvent.click(
@@ -85,7 +87,9 @@ it('Overnight says what it practised on tasks it made up, and when coding practi
 
   const night = screen.getByRole('region', { name: 'Overnight' });
   expect(
-    within(night).getByText('Practised 40 document tasks it made up: 33 passed'),
+    within(night).getByText(
+      'Practised 40 document tasks it made up: 33 passed',
+    ),
   ).toBeVisible();
   expect(
     within(night).getByText(

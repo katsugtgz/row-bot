@@ -27,9 +27,7 @@ export function QuickQuestion({
   ) => {
     setBusy(true);
     try {
-      notify(
-        (await io.run(action, { item_id: question.id, answer })).summary,
-      );
+      notify((await io.run(action, { item_id: question.id, answer })).summary);
     } catch (cause) {
       notify(clientError(cause).message, 'danger');
     } finally {
