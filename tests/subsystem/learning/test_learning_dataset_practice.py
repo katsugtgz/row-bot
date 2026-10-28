@@ -17,7 +17,7 @@ from row_bot.learning.spending import TokenMeter
 from row_bot.learning.store import MARK_HELD_OUT, LearningStore
 from row_bot.learning.training import dataset, recipes
 from tests.fixtures.learning import CapturedWork, signal
-from tests.fixtures.learning_eval import ScriptedClient, capture_decision
+from tests.fixtures.learning_eval import capture_decision
 from tests.subsystem.learning.test_learning_dataset_shape import CLOUD_SYSTEM, CLOUD_TOOLS, ENVELOPE, CloudWork
 from tests.subsystem.learning.test_learning_practice import GOOD, GOOD_2, Tester, lookup_task, teacher
 
