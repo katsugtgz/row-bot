@@ -405,7 +405,7 @@ def test_only_delete_data_ever_deletes_learning_data(api, no_channels, chats, mo
     fields = {"version": 1, "kind": "document_lookups", "job_id": "job_unknown", "runtime": "ollama",
               "folder": "C:/nowhere", "item_id": "item_unknown", "model": "qwen3.5-2b", "download": "not_now",
               "conversation_id": "chat-b", "message_id": "run-msg-3", "signal_id": "sig_unknown",
-              "category": "wrong_answer", "change_id": "proposal_unknown", "text": "Use the ID"}
+              "category": "wrong_answer", "change_id": "proposal_unknown", "text": "Use the ID", "answer": "The newest"}
     extra = {"turn_on": {"setup": SETUP},
              "save_advanced": {"advanced": {"rank": 16, "learning_rate": 0.0002, "epochs": 3, "context": 16384}}}
 
